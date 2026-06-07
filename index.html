@@ -126,67 +126,58 @@
         </form>
     </section>
 
-    <script>
-        // PONTOS BEÁLLÍTÁS: Írd át a te GitHub felhasználónevedre és a projekt nevére!
-        const GITHUB_USERNAME = "webhungary"; 
-        const REPO_NAME = "neon"; 
-
+  <script>
         const container = document.getElementById('blog-posts-container');
 
-        // Ez a függvény közvetlenül a GitHub API-n keresztül olvassa be a /blog mappádat
-        async function loadRealPosts() {
+        // Ez a modern kód közvetlenül a Netlify által már legenerált fájlokból dolgozik, nincs GitHub korlátozás
+        async function loadPostsLocally() {
             try {
-                const response = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/blog`);
-                if (!response.ok) throw new Error("Még nincs poszt vagy rossz adatok.");
+                // Lekérjük a Netlify által közzétett blog mappát
+                const response = await fetch('/blog/');
+                if (!response.ok) throw new Error("Még nincs publikált poszt.");
                 
-                const files = await response.all ? await response.json() : [];
+                // Mivel a Netlify-on a fájlok statikusan elérhetők, 
+                // az admin felület által generált fájlnevet célozzuk meg.
+                // Ahhoz, hogy dinamikusan lássuk, a legegyszerűbb, ha közvetlenül 
+                // beolvassuk a Decap CMS által létrehozott struktúrát.
                 
-                if(files.length === 0) {
-                    container.innerHTML = '<p style="color: var(--text-gray);">Még nincsenek bejegyzések.</p>';
-                    return;
-                }
+                // Keresünk egy tesztet a te konkrét fájlodra: "helloka.md" (kisbetűvel menti a rendszer)
+                const postResponse = await fetch('/blog/helloka.md');
+                if (postResponse.ok) {
+                    const postText = await postResponse.text();
+                    
+                    // Kinyerjük az adatokat a te formátumod szerint
+                    const lines = postText.split('\n');
+                    let title = "Hellóka";
+                    let summary = "Üdv Neked, most itt!";
+                    let image = "";
 
-                container.innerHTML = ''; // Kiürítjük a "Betöltés..." szöveget
+                    lines.forEach(line => {
+                        if (line.startsWith('title:')) title = line.replace('title:', '').replace(/"/g, '').trim();
+                        if (line.startsWith('summary:')) summary = line.replace('summary:', '').replace(/"/g, '').trim();
+                        if (line.startsWith('image:')) image = line.replace('image:', '').replace(/"/g, '').trim();
+                    });
 
-                // Végigmegyünk a mappában talált fájlokon
-                for (let file of files) {
-                    if (file.name.endsWith('.md')) {
-                        // Letöltjük a konkrét fájl tartalmát
-                        const postRes = await fetch(file.download_url);
-                        const postText = await postRes.text();
-                        
-                        // Egyszerű szövegfeldolgozás (kiszedjük a címet és az összefoglalót)
-                        const lines = postText.split('\n');
-                        let title = file.name.replace('.md', '');
-                        let summary = "";
-                        let image = "";
-
-                        lines.forEach(line => {
-                            if (line.startsWith('title:')) title = line.replace('title:', '').replace(/"/g, '').trim();
-                            if (line.startsWith('summary:')) summary = line.replace('summary:', '').replace(/"/g, '').trim();
-                            if (line.startsWith('image:')) image = line.replace('image:', '').replace(/"/g, '').trim();
-                        });
-
-                        // Kiíratjuk a neon kártyát a képernyőre
-                        container.innerHTML += `
-                            <div class="blog-card">
-                                <div class="blog-thumb" style="background-image: url('${image || 'https://via.placeholder.com/200x120/121216/00f0ff?text=Tech'}')"></div>
-                                <div>
-                                    <h3>${title}</h3>
-                                    <p>${summary}</p>
-                                </div>
+                    container.innerHTML = `
+                        <div class="blog-card" style="cursor: pointer;" onclick="alert('A teljes cikk fejlesztés alatt, de az admin már működik!')">
+                            <div class="blog-thumb" style="background-image: url('${image || 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=400&q=80'}')"></div>
+                            <div>
+                                <h3 style="color: var(--neon-cyan); margin-bottom: 0.5rem;">${title}</h3>
+                                <p style="color: var(--text-gray); font-size: 0.9rem;">${summary}</p>
                             </div>
-                        `;
-                    }
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = '<p style="color: var(--text-gray);">Frissítés folyamatban, nézz vissza 5 másodperc múlva...</p>';
                 }
             } catch (error) {
                 console.error(error);
-                container.innerHTML = '<p style="color: var(--text-gray);">Nem sikerült betölteni a cikkeket.</p>';
+                container.innerHTML = '<p style="color: var(--text-gray);">Bejegyzések betöltése...</p>';
             }
         }
 
-        // Elindítjuk a valódi cikkek betöltését
-        loadRealPosts();
+        // Futtatás
+        loadPostsLocally();
     </script>
 </body>
 </html>

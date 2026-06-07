@@ -127,33 +127,66 @@
     </section>
 
     <script>
-        // Ez a kis kód felel azért, hogy a tárhelyeden lévő "blog" mappából automatikusan beolvassa a cikkeket
-        // Localhoston (ha csak simán megnyitod a gépeden a fájlt) egyelőre mintaadatokat mutat
-        const container = document.getElementById('blog-posts-container');
-        
-        // Mintaadatok amíg nincs élesítve
-        const mockPosts = [
-            { title: "A UI/UX dizájn jövője", summary: "Hogyan alakítják át a mesterséges intelligencia által vezérelt interfészek a webet?", image: "" },
-            { title: "Miért hagyd el a WordPress-t?", summary: "A statikus weboldalak és a fájlalapú CMS rendszerek előnyei.", image: "" }
-        ];
+        // PONTOS BEÁLLÍTÁS: Írd át a te GitHub felhasználónevedre és a projekt nevére!
+        const GITHUB_USERNAME = "webhungary"; 
+        const REPO_NAME = "neon"; 
 
-        function renderPosts(posts) {
-            container.innerHTML = '';
-            posts.forEach(post => {
-                container.innerHTML += `
-                    <div class="blog-card">
-                        <div class="blog-thumb" style="background-image: url('${post.image || 'https://via.placeholder.com/200x120/121216/00f0ff?text=Tech'}')"></div>
-                        <div>
-                            <h3>${post.title}</h3>
-                            <p>${post.summary}</p>
-                        </div>
-                    </div>
-                `;
-            });
+        const container = document.getElementById('blog-posts-container');
+
+        // Ez a függvény közvetlenül a GitHub API-n keresztül olvassa be a /blog mappádat
+        async function loadRealPosts() {
+            try {
+                const response = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/blog`);
+                if (!response.ok) throw new Error("Még nincs poszt vagy rossz adatok.");
+                
+                const files = await response.all ? await response.json() : [];
+                
+                if(files.length === 0) {
+                    container.innerHTML = '<p style="color: var(--text-gray);">Még nincsenek bejegyzések.</p>';
+                    return;
+                }
+
+                container.innerHTML = ''; // Kiürítjük a "Betöltés..." szöveget
+
+                // Végigmegyünk a mappában talált fájlokon
+                for (let file of files) {
+                    if (file.name.endsWith('.md')) {
+                        // Letöltjük a konkrét fájl tartalmát
+                        const postRes = await fetch(file.download_url);
+                        const postText = await postRes.text();
+                        
+                        // Egyszerű szövegfeldolgozás (kiszedjük a címet és az összefoglalót)
+                        const lines = postText.split('\n');
+                        let title = file.name.replace('.md', '');
+                        let summary = "";
+                        let image = "";
+
+                        lines.forEach(line => {
+                            if (line.startsWith('title:')) title = line.replace('title:', '').replace(/"/g, '').trim();
+                            if (line.startsWith('summary:')) summary = line.replace('summary:', '').replace(/"/g, '').trim();
+                            if (line.startsWith('image:')) image = line.replace('image:', '').replace(/"/g, '').trim();
+                        });
+
+                        // Kiíratjuk a neon kártyát a képernyőre
+                        container.innerHTML += `
+                            <div class="blog-card">
+                                <div class="blog-thumb" style="background-image: url('${image || 'https://via.placeholder.com/200x120/121216/00f0ff?text=Tech'}')"></div>
+                                <div>
+                                    <h3>${title}</h3>
+                                    <p>${summary}</p>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = '<p style="color: var(--text-gray);">Nem sikerült betölteni a cikkeket.</p>';
+            }
         }
-        
-        // Először kitesszük a mintákat, élesben ide jön a valódi fájl-beolvasás
-        renderPosts(mockPosts);
+
+        // Elindítjuk a valódi cikkek betöltését
+        loadRealPosts();
     </script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 backend:
   name: git-gateway
-  branch: neon/main
+  branch: main
 
 local_backend: true # Lehetővé teszi, hogy a saját gépeden is teszteld
 

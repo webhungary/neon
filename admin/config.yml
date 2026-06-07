@@ -1,0 +1,21 @@
+backend:
+  name: git-gateway
+  branch: main
+
+local_backend: true # Lehetővé teszi, hogy a saját gépeden is teszteld
+
+media_folder: "images/uploads" # Ide menti majd a képeket, amiket feltöltesz
+public_folder: "/images/uploads"
+
+collections:
+  - name: "blog"
+    label: "Blogbejegyzések"
+    folder: "blog" # Ide menti majd a cikkeket szöveges fájlként
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "Cím", name: "title", widget: "string"}
+      - {label: "Rövid összefoglaló", name: "summary", widget: "string"}
+      - {label: "Borítókép", name: "image", widget: "image", required: false}
+      - {label: "Dátum", name: "date", widget: "datetime"}
+      - {label: "A cikk tartalma", name: "body", widget: "markdown"}

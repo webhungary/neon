@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Személyes Portfólió & Blog</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <!-- Netlify Identity widget az admin belépéshez -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    
+    <style>
+        :root {
+            --bg-dark: #0a0a0c;
+            --bg-card: #121216;
+            --neon-blue: #00f0ff;
+            --neon-glow: rgba(0, 240, 255, 0.4);
+            --text-white: #ffffff;
+            --text-gray: #8a8a93;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: var(--text-white); overflow-x: hidden; }
+
+        nav {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            background: rgba(18, 18, 22, 0.8); backdrop-filter: blur(10px);
+            padding: 15px 30px; border-radius: 100px; border: 1px solid rgba(255, 255, 255, 0.1); z-index: 1000;
+        }
+        nav ul { display: flex; list-style: none; gap: 25px; }
+        nav a { color: var(--text-gray); text-decoration: none; font-size: 0.9rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; transition: all 0.3s ease; }
+        nav a:hover { color: var(--neon-blue); text-shadow: 0 0 10px var(--neon-glow); }
+
+        section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 100px 10%; position: relative; }
+        h2 { font-size: 3rem; font-weight: 900; margin-bottom: 40px; text-transform: uppercase; letter-spacing: 2px; }
+        .blue-glow-text { color: var(--neon-blue); text-shadow: 0 0 15px var(--neon-glow); }
+
+        #home { text-align: center; background: radial-gradient(circle at center, #101a26 0%, var(--bg-dark) 70%); }
+        #home h1 { font-size: 5rem; font-weight: 900; line-height: 1.1; margin-bottom: 20px; letter-spacing: -1px; }
+        #home p { font-size: 1.5rem; color: var(--text-gray); max-width: 600px; margin-bottom: 40px; }
+
+        .cta-btn {
+            background: transparent; border: 2px solid var(--neon-blue); color: var(--neon-blue);
+            padding: 15px 35px; font-size: 1rem; font-weight: 700; border-radius: 5px; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 2px; transition: all 0.3s ease; box-shadow: 0 0 15px var(--neon-glow);
+        }
+        .cta-btn:hover { background: var(--neon-blue); color: var(--bg-dark); box-shadow: 0 0 30px var(--neon-blue); }
+
+        #about .content { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; max-width: 1100px; }
+        #about .text { font-size: 1.1rem; line-height: 1.8; color: var(--text-gray); }
+        #about .image-box { width: 100%; height: 400px; background: linear-gradient(45deg, #121216, #1a1a24); border: 1px solid rgba(0, 240, 255, 0.2); border-radius: 12px; position: relative; overflow: hidden; }
+
+        #gallery .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; width: 100%; max-width: 1100px; }
+        .gallery-item { height: 250px; background: #16161a; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: transform 0.4s; }
+        .gallery-item:hover { transform: scale(1.03); border-color: var(--neon-blue); }
+
+        #blog .articles { display: flex; flex-direction: column; gap: 30px; width: 100%; max-width: 900px; }
+        .blog-card { background: var(--bg-card); border: 1px solid rgba(255,255,255,0.05); padding: 30px; border-radius: 12px; display: grid; grid-template-columns: 200px 1fr; gap: 30px; cursor: pointer; transition: all 0.3s ease; }
+        .blog-card:hover { border-color: rgba(0, 240, 255, 0.3); transform: translateX(10px); background: #16161f; }
+        .blog-thumb { background: #22222b; border-radius: 8px; height: 100%; min-height: 120px; background-size: cover; background-position: center; }
+        .blog-card h3 { font-size: 1.5rem; margin-bottom: 10px; transition: color 0.3s; }
+        .blog-card:hover h3 { color: var(--neon-blue); }
+        .blog-card p { color: var(--text-gray); line-height: 1.6; }
+
+        #contact form { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 15px; }
+        input, textarea { width: 100%; background: var(--bg-card); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 6px; color: white; font-family: inherit; }
+        input:focus, textarea:focus { outline: none; border-color: var(--neon-blue); box-shadow: 0 0 10px var(--neon-glow); }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <ul>
+            <li><a href="#home">Főoldal</a></li>
+            <li><a href="#about">Rólam</a></li>
+            <li><a href="#gallery">Galéria</a></li>
+            <li><a href="#blog">Blog</a></li>
+            <li><a href="#contact">Kapcsolat</a></li>
+        </ul>
+    </nav>
+
+    <section id="home">
+        <h1>Gondoljuk újra a <br><span class="blue-glow-text">Webdizájnt</span></h1>
+        <p>Informatika, jövőbiztos technológiák és látványos digitális élmények egy helyen.</p>
+        <button class="cta-btn" onclick="document.getElementById('about').scrollIntoView();">Fedezd fel</button>
+    </section>
+
+    <section id="about">
+        <h2>Ki vagyok <span class="blue-glow-text">én?</span></h2>
+        <div class="content">
+            <div class="text">
+                <p>Üdvözöllek a digitális játszóteremen! Webdizájnerként és tech-rajongóként azon dolgozom, hogy a legújabb informatikai megoldásokat ötvözzem a letisztult, jövőbe mutató esztétikával.</p>
+                <br>
+                <p>Hiszek abban, hogy a kód nem csak logikus, de gyönyörű is lehet. Ezen a blogon keresztül osztom meg a legfrissebb fejlesztési trendeket, dizájn tippeket és technológiai újdonságokat.</p>
+            </div>
+            <div class="image-box"></div>
+        </div>
+    </section>
+
+    <section id="gallery">
+        <h2>Látványos <span class="blue-glow-text">Munkák</span></h2>
+        <div class="grid">
+            <div class="gallery-item"></div>
+            <div class="gallery-item"></div>
+            <div class="gallery-item)"></div >
+        </div>
+    </section>
+
+    <!-- BLOG SZEKCIÓ (Ez már dinamikusan fog frissülni) -->
+    <section id="blog">
+        <h2>Friss <span class="blue-glow-text">Cikkek</span></h2>
+        <div class="articles" id="blog-posts-container">
+            <!-- Ide töltődnek be az admin felületen írt cikkek -->
+            <p style="color: var(--text-gray);">Cikkek betöltése...</p>
+        </div>
+    </section>
+
+    <section id="contact">
+        <h2>Indítsunk valami <span class="blue-glow-text">új it?</span></h2>
+        <form onsubmit="event.preventDefault(); alert('Üzenet elküldve!');">
+            <input type="text" placeholder="Neved" required>
+            <input type="email" placeholder="E-mail címed" required>
+            <textarea rows="5" placeholder="Üzeneted helye..." required></textarea>
+            <button type="submit" class="cta-btn">Üzenet küldése</button>
+        </form>
+    </section>
+
+    <script>
+        // Ez a kis kód felel azért, hogy a tárhelyeden lévő "blog" mappából automatikusan beolvassa a cikkeket
+        // Localhoston (ha csak simán megnyitod a gépeden a fájlt) egyelőre mintaadatokat mutat
+        const container = document.getElementById('blog-posts-container');
+        
+        // Mintaadatok amíg nincs élesítve
+        const mockPosts = [
+            { title: "A UI/UX dizájn jövője", summary: "Hogyan alakítják át a mesterséges intelligencia által vezérelt interfészek a webet?", image: "" },
+            { title: "Miért hagyd el a WordPress-t?", summary: "A statikus weboldalak és a fájlalapú CMS rendszerek előnyei.", image: "" }
+        ];
+
+        function renderPosts(posts) {
+            container.innerHTML = '';
+            posts.forEach(post => {
+                container.innerHTML += `
+                    <div class="blog-card">
+                        <div class="blog-thumb" style="background-image: url('${post.image || 'https://via.placeholder.com/200x120/121216/00f0ff?text=Tech'}')"></div>
+                        <div>
+                            <h3>${post.title}</h3>
+                            <p>${post.summary}</p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        
+        // Először kitesszük a mintákat, élesben ide jön a valódi fájl-beolvasás
+        renderPosts(mockPosts);
+    </script>
+</body>
+</html>
